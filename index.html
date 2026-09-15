@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Test pre-cita Smile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F9F7;
+  --paper:#FFFFFF;
+  --ink:#16292E;
+  --ink-2:#4B6168;
+  --line:#D6E4E1;
+  --teal:#0E7C86;
+  --teal-deep:#0A5B62;
+  --teal-soft:#DCEFF1;
+  --sun:#FFD166;
+  --alert:#E2543E;
+  --alert-soft:#FDE9E5;
+  --ok:#2E9E6B;
+  --ok-soft:#E3F5EC;
+  --radius:18px;
+  --shadow:0 12px 30px -18px rgba(14,124,134,.35);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1B1E; --paper:#16262A; --ink:#EAF3F2; --ink-2:#A6BCC0;
+    --line:#274046; --teal:#3FB5BF; --teal-deep:#7ED6DD; --teal-soft:#153B40;
+    --alert:#FF7A62; --alert-soft:#3A1F1A; --ok:#5BD39B; --ok-soft:#173629;
+    --shadow:0 12px 30px -18px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1B1E; --paper:#16262A; --ink:#EAF3F2; --ink-2:#A6BCC0;
+  --line:#274046; --teal:#3FB5BF; --teal-deep:#7ED6DD; --teal-soft:#153B40;
+  --alert:#FF7A62; --alert-soft:#3A1F1A; --ok:#5BD39B; --ok-soft:#173629;
+  --shadow:0 12px 30px -18px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:'Outfit',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.5;font-size:17px;
+  min-height:100vh;
+}
+button{font:inherit;cursor:pointer}
+input,select,textarea{font:inherit;color:inherit}
+
+.wrap{max-width:560px;margin:0 auto;padding:20px 18px 48px}
+header{display:flex;align-items:center;justify-content:space-between;padding:6px 0 18px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:600;letter-spacing:-.01em}
+.logo .mark{width:34px;height:34px;border-radius:12px 12px 12px 4px;background:var(--teal);display:grid;place-items:center}
+.logo .mark svg{width:20px;height:20px}
+.step-tag{font-size:14px;color:var(--ink-2)}
+
+.screen{display:none}
+.screen.active{display:block}
+
+/* Progress */
+.progress{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:26px}
+.progress i{display:block;height:100%;background:var(--teal);width:0;transition:width .35s ease}
+
+/* Intro */
+.hero h1{font-size:clamp(30px,7vw,40px);line-height:1.08;font-weight:600;letter-spacing:-.025em;margin-bottom:14px}
+.hero p{color:var(--ink-2);font-size:18px;max-width:46ch}
+.symptom-strip{margin:26px 0 8px;display:flex;flex-direction:column;gap:10px}
+.symptom-strip button{
+  text-align:left;background:var(--paper);border:1px solid var(--line);border-radius:14px;
+  padding:14px 16px;color:var(--ink);display:flex;gap:12px;align-items:flex-start;
+}
+.symptom-strip button:hover,.symptom-strip button:focus-visible{border-color:var(--teal);outline:none}
+.symptom-strip button span.q{font-weight:500;font-size:16.5px}
+.symptom-strip button em{font-style:normal;color:var(--teal);font-weight:600;flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--teal-soft);display:grid;place-items:center;font-size:13px;margin-top:2px}
+.meta{margin-top:22px;color:var(--ink-2);font-size:15px;display:flex;gap:14px;flex-wrap:wrap}
+.meta span::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--sun);margin-right:7px;vertical-align:middle}
+
+/* Buttons */
+.btn{
+  text-decoration:none;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:15px 22px;border-radius:999px;border:0;font-weight:600;font-size:17px;
+  background:var(--teal);color:#fff;width:100%;transition:transform .08s ease,background .15s;
+}
+.btn:hover{background:var(--teal-deep)}
+.btn:active{transform:scale(.99)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--teal);border:1.5px solid var(--line)}
+.btn.ghost:hover{background:var(--teal-soft)}
+.btn.wa{background:#25D366;color:#0B2A18}
+.btn.wa:hover{background:#1FBF5A}
+.btn.alert{background:var(--alert)}
+.btn svg{width:20px;height:20px;flex-shrink:0}
+.actions{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.row{display:flex;gap:10px}
+.row .btn{width:auto;flex:1}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px;border-radius:12px}
+
+/* Question */
+.qnum{font-size:14px;color:var(--ink-2);margin-bottom:8px}
+.qtext{font-size:clamp(23px,5.6vw,28px);line-height:1.2;font-weight:600;letter-spacing:-.02em;margin-bottom:6px}
+.qhelp{color:var(--ink-2);font-size:15.5px;margin-bottom:18px}
+.options{display:flex;flex-direction:column;gap:9px}
+.opt{
+  display:flex;align-items:center;gap:12px;text-align:left;
+  background:var(--paper);border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;
+  color:var(--ink);font-size:16.5px;font-weight:400;transition:border-color .12s,background .12s;
+}
+.opt .dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);flex-shrink:0;position:relative}
+.opt.selected{border-color:var(--teal);background:var(--teal-soft)}
+.opt.selected .dot{border-color:var(--teal)}
+.opt.selected .dot::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--teal)}
+.opt:hover{border-color:var(--teal)}
+
+textarea.free{width:100%;min-height:140px;padding:14px 16px;border-radius:14px;border:1.5px solid var(--line);background:var(--paper);font-size:17px;line-height:1.5;resize:vertical}
+textarea.free:focus{border-color:var(--teal);outline:none}
+
+/* Result */
+.gauge{
+  background:var(--paper);border-radius:var(--radius);padding:22px;border:1px solid var(--line);
+  box-shadow:var(--shadow);margin:6px 0 18px;
+}
+.gauge .big{display:flex;align-items:baseline;gap:6px}
+.gauge .big b{font-size:64px;font-weight:600;letter-spacing:-.04em;line-height:1}
+.gauge .big small{color:var(--ink-2);font-size:16px}
+.bar{height:12px;border-radius:12px;margin:14px 0 8px;position:relative;
+  background:linear-gradient(90deg,var(--ok) 0 30%,var(--sun) 30% 60%,var(--alert) 60% 100%)}
+.bar i{position:absolute;top:-5px;width:22px;height:22px;border-radius:50%;background:var(--ink);border:3px solid var(--paper);transform:translateX(-50%);transition:left .6s cubic-bezier(.2,.8,.2,1)}
+.bar-labels{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-2)}
+.verdict{margin-top:14px;padding:12px 14px;border-radius:12px;font-weight:500;font-size:16px}
+.verdict.ok{background:var(--ok-soft);color:var(--ok)}
+.verdict.mid{background:#FFF3D1;color:#7A5300}
+:root[data-theme="dark"] .verdict.mid{background:#3D3010;color:#FFD166}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .verdict.mid{background:#3D3010;color:#FFD166}}
+.verdict.hi{background:var(--alert-soft);color:var(--alert)}
+.route{display:flex;gap:12px;align-items:flex-start;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:18px}
+.route .ic{width:44px;height:44px;border-radius:14px;background:var(--teal-soft);display:grid;place-items:center;flex-shrink:0}
+.route .ic svg{width:24px;height:24px}
+.route h3{font-size:19px;font-weight:600;letter-spacing:-.01em;margin-bottom:3px}
+.route p{color:var(--ink-2);font-size:15.5px}
+.flags{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.flag{display:flex;gap:10px;font-size:15.5px;color:var(--ink-2);align-items:flex-start}
+.flag::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--teal);flex-shrink:0;margin-top:8px}
+h2{font-size:22px;font-weight:600;letter-spacing:-.02em;margin:26px 0 6px}
+.sub{color:var(--ink-2);font-size:15.5px;margin-bottom:14px}
+
+/* Form */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:15px;font-weight:500;margin-bottom:6px}
+.field input,.field select,.field textarea{
+  width:100%;padding:13px 14px;border-radius:12px;border:1.5px solid var(--line);
+  background:var(--paper);font-size:16.5px;
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--teal);outline:none}
+.field textarea{min-height:84px;resize:vertical}
+.field .hint{font-size:13.5px;color:var(--ink-2);margin-top:5px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:10px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--paper);font-size:15px}
+.chip.selected{background:var(--teal);color:#fff;border-color:var(--teal)}
+.notice{background:var(--teal-soft);border-radius:12px;padding:12px 14px;font-size:15px;margin:6px 0 16px;color:var(--ink)}
+.notice.warn{background:var(--alert-soft);color:var(--alert)}
+.err{color:var(--alert);font-size:14px;margin-top:6px;display:none}
+
+/* Summary */
+.summary{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:18px;font-size:15.5px;white-space:pre-wrap;line-height:1.55;overflow-x:auto}
+.fine{font-size:13.5px;color:var(--ink-2);margin-top:18px;line-height:1.45}
+
+@media (prefers-reduced-motion: reduce){*{transition:none !important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="logo">
+      <div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3.5C5 3.5 3.5 6 3.5 8.5c0 3 2 5 2.5 8 .4 2.5 1 4 2 4s1.3-1.5 1.6-3.5c.2-1.3.7-2 2.4-2s2.2.7 2.4 2c.3 2 .6 3.5 1.6 3.5s1.6-1.5 2-4c.5-3 2.5-5 2.5-8C20.5 6 19 3.5 16 3.5c-1.6 0-2.6.8-4 .8s-2.4-.8-4-.8z"/></svg></div>
+      <span>Smile Osorno</span>
+    </div>
+    <span class="step-tag" id="stepTag">Test pre-cita</span>
+  </header>
+
+  <!-- INTRO -->
+  <section class="screen active" id="s-intro">
+    <div class="hero">
+      <h1>Cuéntanos qué sientes antes de tu cita</h1>
+      <p>Responde 18 preguntas cortas. Al final sabrás qué tan urgente es tu caso, con qué especialista deberías atenderte y qué llevar a tu evaluación.</p>
+    </div>
+    <div class="symptom-strip" aria-label="Síntomas frecuentes">
+      <button type="button" onclick="startQuiz()"><em>?</em><span class="q">¿Te duele un diente al tomar algo frío o caliente y el dolor se queda un rato?</span></button>
+      <button type="button" onclick="startQuiz()"><em>?</em><span class="q">¿Te sangran las encías al cepillarte y lo tomaste como normal?</span></button>
+      <button type="button" onclick="startQuiz()"><em>?</em><span class="q">¿Escondes la sonrisa en las fotos porque tus dientes están chuecos o separados?</span></button>
+      <button type="button" onclick="startQuiz()"><em>?</em><span class="q">¿Llevas más de un año sin ir al dentista porque te da miedo o "no duele nada"?</span></button>
+    </div>
+    <div class="meta"><span>3 minutos</span><span>Gratis</span><span>Sin registrarte</span></div>
+    <div class="actions">
+      <button class="btn" type="button" onclick="startQuiz()">Empezar el test</button>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="screen" id="s-quiz">
+    <div class="progress"><i id="progBar"></i></div>
+    <div class="qnum" id="qnum"></div>
+    <div class="qtext" id="qtext"></div>
+    <div class="qhelp" id="qhelp"></div>
+    <div class="options" id="options"></div>
+    <div class="actions row">
+      <button class="btn ghost" type="button" id="btnBack" onclick="prevQ()">Atrás</button>
+      <button class="btn" type="button" id="btnNext" onclick="nextQ()" disabled>Siguiente</button>
+    </div>
+  </section>
+
+  <!-- RESULT -->
+  <section class="screen" id="s-result">
+    <div class="gauge">
+      <div class="big"><b id="score">0</b><small>de 43 puntos</small></div>
+      <div class="bar"><i id="marker" style="left:0"></i></div>
+      <div class="bar-labels"><span>Control</span><span>Evaluación</span><span>Prioritario</span></div>
+      <div class="verdict" id="verdict"></div>
+    </div>
+
+    <div class="route">
+      <div class="ic" id="routeIcon"></div>
+      <div>
+        <h3 id="routeTitle"></h3>
+        <p id="routeText"></p>
+      </div>
+    </div>
+    <div class="flags" id="flags"></div>
+
+    <h2>Antes de tu evaluación</h2>
+    <p class="sub">Déjanos tus datos y los recibimos por WhatsApp con tu resultado. Así el doctor llega a tu cita sabiendo qué sientes y qué esperas.</p>
+
+    <div class="field">
+      <label for="fName">Nombre y apellido</label>
+      <input id="fName" type="text" autocomplete="name" placeholder="Ej: Camila Pérez">
+      <div class="err" id="eName">Necesitamos tu nombre para agendarte.</div>
+    </div>
+    <div class="field">
+      <label for="fAge">Edad</label>
+      <input id="fAge" type="number" inputmode="numeric" min="1" max="110" placeholder="Ej: 32" oninput="ageHints()">
+      <div class="notice" id="ageNotice" style="display:none"></div>
+    </div>
+    <div class="field">
+      <label for="fPhone">WhatsApp</label>
+      <input id="fPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+56 9 1234 5678">
+      <div class="err" id="ePhone">Escribe un número de contacto.</div>
+    </div>
+    <div class="field">
+      <label>¿Tienes alguna cobertura dental?</label>
+      <div class="chips" id="prev">
+        <button type="button" class="chip" data-v="Fonasa" onclick="pick(this,'prev')">Fonasa</button>
+        <button type="button" class="chip" data-v="Seguro dental (complementario)" onclick="pick(this,'prev')">Seguro dental</button>
+        <button type="button" class="chip" data-v="Fonasa + seguro dental" onclick="pick(this,'prev')">Ambos</button>
+        <button type="button" class="chip" data-v="Ninguna" onclick="pick(this,'prev')">Ninguna</button>
+      </div>
+      <div class="hint">Isapre sola no cubre dental. Fonasa tiene bonos PAD según edad; los seguros dentales reembolsan.</div>
+      <div class="err" id="ePrev">Marca una opción.</div>
+    </div>
+    <div class="field">
+      <label>¿Cuándo te acomoda?</label>
+      <div class="chips" id="slot">
+        <button type="button" class="chip" data-v="Mañana" onclick="pick(this,'slot')">Mañana</button>
+        <button type="button" class="chip" data-v="Tarde" onclick="pick(this,'slot')">Tarde</button>
+        <button type="button" class="chip" data-v="Cualquier horario" onclick="pick(this,'slot')">Cualquiera</button>
+      </div>
+      <div class="err" id="eSlot">Marca un horario.</div>
+    </div>
+    <div class="field">
+      <label for="fNote">¿Algo más que debamos saber? <span style="color:var(--ink-2);font-weight:400">(opcional)</span></label>
+      <textarea id="fNote" placeholder="Enfermedades, embarazo, medicamentos, alergias, una radiografía reciente…"></textarea>
+    </div>
+
+    <div class="actions">
+      <a class="btn wa" id="waLink1" href="#" target="_blank" rel="noopener" onclick="return sendWA(this)">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5.1 4.5 2.5 1 3 .8 3.6.8.6-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4-.1-.2-.3-.2-.7-.4zM12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>
+        Enviar mi resultado a Smile
+      </a>
+      <div class="notice warn" id="waFail1" style="display:none"></div>
+      <button class="btn ghost" type="button" onclick="showSummary()">Ver mi resumen</button>
+      <button class="btn ghost" type="button" onclick="restart()">Volver a empezar</button>
+    </div>
+    <p class="fine">Este test orienta, no diagnostica. El diagnóstico lo hace el dentista en tu evaluación clínica. Tus respuestas no se guardan en esta página: solo se envían si tú decides mandarlas por WhatsApp.</p>
+  </section>
+
+  <!-- SUMMARY -->
+  <section class="screen" id="s-summary">
+    <h2 style="margin-top:0">Tu resumen</h2>
+    <p class="sub">Esto es exactamente lo que recibe la clínica.</p>
+    <div class="summary" id="summaryBox"></div>
+    <div class="actions">
+      <a class="btn wa" id="waLink2" href="#" target="_blank" rel="noopener" onclick="return sendWA(this)">Enviar por WhatsApp</a>
+      <div class="notice warn" id="waFail2" style="display:none"></div>
+      <button class="btn ghost" type="button" onclick="copySummary()" id="btnCopy">Copiar texto</button>
+      <button class="btn ghost" type="button" onclick="go('s-result')">Volver</button>
+    </div>
+  </section>
+</div>
+
+<script>
+const CLINIC_WA = '56956710607';
+
+const Q = [
+  {t:'¿Sientes dolor en algún diente o muela?', h:'Piensa en la última semana.',
+   o:[['No',0],['Solo cuando muerdo algo duro',1],['Sí, a ratos, y se pasa solo',2],['Sí, y me despierta o me impide comer',4]], tag:'dolor'},
+  {t:'¿Te molesta lo frío, lo caliente o lo dulce?', h:'Sensibilidad dental.',
+   o:[['No',0],['Un poco, se pasa al tiro',1],['Sí, y el dolor se queda varios segundos',3],['Sí, y después queda doliendo solo',4]], tag:'sens'},
+  {t:'¿Te sangran las encías?', h:'Al cepillarte, al usar hilo o solas.',
+   o:[['Nunca',0],['A veces, al cepillarme fuerte',1],['Casi siempre que me cepillo',3],['Solas, o tengo las encías hinchadas',4]], tag:'encia'},
+  {t:'¿Tienes algún diente quebrado, con una tapadura suelta o que se te cayó?', h:'',
+   o:[['No',0],['Una tapadura antigua que se siente rara',2],['Sí, un diente quebrado o roto',3],['Sí, y se movió o se cayó un diente',4]], tag:'rotura'},
+  {t:'¿Cómo ves tus dientes al sonreír?', h:'Sé honesto, esto es para ti.',
+   o:[['Bien, no cambiaría nada',0],['Un poco chuecos o separados, pero no me complica',1],['Chuecos y me incomoda en fotos',2],['Me limita: evito sonreír o hablar de frente',3]], tag:'orto', orto:true},
+  {t:'¿Tienes mal aliento o mal sabor en la boca que no se va con el cepillado?', h:'',
+   o:[['No',0],['A veces',1],['Seguido',2],['Siempre, y otras personas me lo han dicho',3]], tag:'aliento'},
+  {t:'¿Te ha salido alguna hinchazón, bolita o "grano" en la encía?', h:'Con o sin pus.',
+   o:[['No',0],['Una vez, y se fue',2],['Sí, tengo una ahora',4],['Sí, con hinchazón en la cara',5]], tag:'absceso'},
+  {t:'¿Cuándo fue tu último control dental?', h:'',
+   o:[['Hace menos de 6 meses',0],['Entre 6 meses y 1 año',1],['Entre 1 y 3 años',2],['Más de 3 años o nunca',3]], tag:'control'},
+  {t:'¿Rechinas o aprietas los dientes, o despiertas con la mandíbula cansada?', h:'',
+   o:[['No',0],['Me lo han dicho, pero no lo noto',1],['Sí, y a veces me duele la cabeza o la mandíbula',2],['Sí, y ya se me han desgastado o quebrado dientes',3]], tag:'brux'},
+  {t:'¿Te falta algún diente o usas prótesis?', h:'Placa, puente, implante o espacio sin diente.',
+   o:[['No, tengo todos mis dientes',0],['Me falta uno y no se nota',1],['Me faltan varios o se me nota al sonreír',3],['Uso prótesis y ya no me queda bien o me molesta',3]], tag:'protesis'},
+  {t:'¿Qué te ha frenado para ir al dentista?', h:'Puedes elegir lo que más se parezca.',
+   o:[['Nada, solo no había tenido tiempo',0],['El costo',1],['Malas experiencias anteriores',2],['Miedo o vergüenza',2]], tag:'freno'},
+  {t:'Lo que te molesta, ¿hace cuánto que lo notas?', h:'Ahora un poco más sobre ti. Estas preguntas no suman puntos.', funnel:true, tag:'f_tiempo',
+   o:[['Es reciente, menos de un mes',0],['Unos meses',0],['Más de un año',0],['Desde siempre, ya me acostumbré',0]]},
+  {t:'¿Qué has hecho hasta ahora para resolverlo?', h:'', funnel:true, tag:'f_intento',
+   o:[['Nada todavía',0],['Remedios o pastillas para el dolor',0],['Fui al dentista pero no seguí el tratamiento',0],['Empecé un tratamiento y lo dejé a medias',0]]},
+  {t:'¿Qué te está costando no resolverlo?', h:'Marca todo lo que aplique.', funnel:true, multi:true, tag:'f_costo',
+   o:[['Como con cuidado o evito ciertas comidas',0],['Duermo mal o ando con dolor de cabeza',0],['Evito sonreír o hablar de frente',0],['Ya gasté plata en parches que no duraron',0],['Nada, la verdad no me afecta',0]]},
+  {t:'¿Cómo te sientes con eso hoy?', h:'', funnel:true, tag:'f_emocion',
+   o:[['Tranquilo, no es tema',0],['Me incomoda, pero lo aguanto',0],['Me tiene cansado o frustrado',0],['Me preocupa que empeore',0]]},
+  {t:'Si pudieras resolverlo, ¿cuándo?', h:'Sin compromiso. Solo para saber cómo acompañarte.', funnel:true, tag:'f_cuando',
+   o:[['Ahora, quiero partir este mes',0],['En los próximos 3 meses',0],['Este año, cuando pueda ordenarme',0],['No lo tengo claro todavía',0]]},
+  {t:'Cierra los ojos un segundo: ¿cómo es tu sonrisa soñada?', h:'Escríbela con tus palabras. Sin límite, sin corregir.', text:true, tag:'sonrisa',
+   ph:'Ej: Reírme fuerte en el matrimonio de mi hermana sin taparme la boca…', o:[]},
+  {t:'¿Qué te gustaría resolver o mejorar?', h:'Marca todo lo que te interese. Esto no suma puntos.', multi:true,
+   o:[['Ortodoncia con brackets',0],['Alineadores invisibles',0],['Prótesis o implantes',0],['Blanqueamiento o estética',0],['Solo quiero un control',0]], tag:'interes'}
+];
+const MAX = 43;
+
+let idx = 0;
+let answers = new Array(Q.length).fill(null);
+let picks = {prev:null, slot:null};
+let result = null;
+
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function startQuiz(){ idx=0; renderQ(); go('s-quiz'); }
+
+function renderQ(){
+  const q = Q[idx];
+  document.getElementById('stepTag').textContent = `Pregunta ${idx+1} de ${Q.length}`;
+  document.getElementById('progBar').style.width = `${(idx/Q.length)*100}%`;
+  document.getElementById('qnum').textContent = `${idx+1} / ${Q.length}`;
+  document.getElementById('qtext').textContent = q.t;
+  document.getElementById('qhelp').textContent = q.h;
+  const box = document.getElementById('options'); box.innerHTML='';
+  if(q.text){
+    const ta=document.createElement('textarea');
+    ta.className='free'; ta.placeholder=q.ph||''; ta.value=answers[idx]||'';
+    ta.oninput=()=>{
+      answers[idx]=ta.value.trim()||null;
+      const b=document.getElementById('btnNext'); b.disabled=false;
+      b.textContent = answers[idx] ? 'Siguiente' : 'Prefiero no responder';
+    };
+    box.appendChild(ta);
+    document.getElementById('btnBack').style.visibility='visible';
+    const nx=document.getElementById('btnNext'); nx.disabled=false;
+    nx.textContent = answers[idx] ? 'Siguiente' : 'Prefiero no responder';
+    setTimeout(()=>ta.focus(),50);
+    return;
+  }
+  q.o.forEach((o,i)=>{
+    const b = document.createElement('button');
+    const sel = q.multi ? (Array.isArray(answers[idx]) && answers[idx].includes(i)) : answers[idx]===i;
+    b.type='button'; b.className='opt'+(sel?' selected':'');
+    b.innerHTML = `<span class="dot"></span><span>${o[0]}</span>`;
+    b.onclick = ()=>{
+      if(q.multi){
+        let a = Array.isArray(answers[idx]) ? answers[idx].slice() : [];
+        a = a.includes(i) ? a.filter(x=>x!==i) : a.concat(i);
+        answers[idx] = a.length ? a : null;
+      } else { answers[idx]=i; }
+      renderQ();
+    };
+    box.appendChild(b);
+  });
+  document.getElementById('btnBack').style.visibility = idx===0?'hidden':'visible';
+  const next = document.getElementById('btnNext');
+  next.disabled = answers[idx]===null;
+  next.textContent = idx===Q.length-1 ? 'Ver mi resultado' : 'Siguiente';
+}
+function prevQ(){ if(idx>0){ idx--; renderQ(); } }
+function nextQ(){
+  if(answers[idx]===null && !Q[idx].text) return;
+  if(idx<Q.length-1){ idx++; renderQ(); } else { compute(); }
+}
+
+function compute(){
+  let score=0; const byTag={};
+  let interests=[];
+  const funnel={}; let sonrisa='';
+  Q.forEach((q,i)=>{
+    if(q.text){ sonrisa = answers[i]||''; return; }
+    if(q.funnel){ funnel[q.tag] = q.multi ? (answers[i]||[]).map(k=>q.o[k][0]) : q.o[answers[i]][0]; return; }
+    if(q.multi){ interests = answers[i].map(k=>q.o[k][0]); byTag[q.tag]=0; return; }
+    const v=q.o[answers[i]][1]; score+=v; byTag[q.tag]=v;
+  });
+  score = Math.min(score, MAX);
+  const wants = t => interests.some(x=>x.startsWith(t));
+
+  // Route
+  let route='general';
+  const flags=[];
+  const endoSignal = byTag.sens>=3 || byTag.dolor>=4 || byTag.absceso>=4;
+  if (byTag.absceso>=5 || byTag.dolor>=4) flags.push('Dolor fuerte o hinchazón: pide una hora de urgencia, no esperes al control de rutina.');
+  if (byTag.absceso>=4) flags.push('Una bolita o pus en la encía suele ser una infección. No se pasa sola aunque deje de doler.');
+  if (endoSignal) route='endo';
+  else if (byTag.protesis>=3 || (wants('Prótesis') && byTag.dolor<=1 && byTag.absceso===0)) route='protesis';
+  else if (wants('Alineadores') && byTag.dolor<=1 && byTag.absceso===0 && byTag.rotura<=2) route='alineadores';
+  else if ((byTag.orto>=2 || wants('Ortodoncia')) && byTag.dolor<=1 && byTag.absceso===0 && byTag.rotura<=2) route='orto';
+  if (wants('Alineadores') && route==='orto') flags.push('Te interesan alineadores invisibles: el ortodoncista te dirá si tu caso califica o si conviene partir con brackets.');
+  if (wants('Prótesis') && route!=='protesis') flags.push('Cuando resolvamos lo urgente, vemos opciones para reponer los dientes que faltan.');
+  if (wants('Blanqueamiento')) flags.push('Blanqueamiento o estética: se hace después de sanar encías y caries, para que el resultado dure.');
+  if (byTag.encia>=3) flags.push('Sangrado frecuente de encías: pediremos evaluación periodontal en la misma visita.');
+  if (byTag.brux>=2) flags.push('Cuéntale al dentista que aprietas o rechinas: podrías necesitar un plano de relajación.');
+  if (byTag.control>=2) flags.push('Llevas tiempo sin control: lo más probable es que partamos con una radiografía panorámica.');
+  if (byTag.freno>=2) flags.push('Dinos si te da miedo o tuviste una mala experiencia. Vamos a tu ritmo, en serio.');
+  if (byTag.orto>=1 && route!=='orto') flags.push('Cuando resolvamos lo urgente, podemos evaluar brackets o alineadores.');
+
+  let level, verdictCls, verdictTxt;
+  if (score<=7){ level='Control'; verdictCls='ok'; verdictTxt='Todo indica que estás bien. Un control preventivo cada 6 meses te mantiene así.'; }
+  else if (score<=15){ level='Evaluación recomendada'; verdictCls='mid'; verdictTxt='Hay señales que conviene revisar ahora, antes de que cuesten más tiempo y plata.'; }
+  else { level='Evaluación prioritaria'; verdictCls='hi'; verdictTxt='Tu boca te está pidiendo atención. Agenda esta semana.'; }
+
+  if (sonrisa) flags.push('Guardamos tu sonrisa soñada. En la evaluación partimos de ahí, no de lo que a nosotros nos parezca.');
+  result = {score, level, route, flags, byTag, verdictTxt, verdictCls, interests, funnel, sonrisa};
+  renderResult();
+  go('s-result');
+}
+
+const ROUTES = {
+  general:{title:'Evaluación general', text:'Revisión completa, radiografía si hace falta y un plan de tratamiento claro antes de hacer nada.',
+    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--teal)"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>'},
+  endo:{title:'Evaluación con endodoncista', text:'El dolor con frío/calor que se queda, o una infección en la encía, suele ser del nervio. Lo revisa el especialista directo, sin pasos intermedios.',
+    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--alert)"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>'},
+  alineadores:{title:'Evaluación de ortodoncia (alineadores)', text:'Quieres alinear tu sonrisa sin que se note. El ortodoncista revisa si tu caso califica para alineadores invisibles y te da tiempos reales.',
+    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--teal)"><path d="M4 12c0-4 3-7 8-7s8 3 8 7-3 7-8 7-8-3-8-7z"/><path d="M8 12h8"/></svg>'},
+  protesis:{title:'Evaluación de rehabilitación', text:'Reponer dientes que faltan o cambiar una prótesis que ya no sirve. El dentista te muestra las opciones (prótesis, puente o implante) y cuál calza con tu caso y tu presupuesto.',
+    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--teal)"><path d="M12 3v6M9 6h6"/><path d="M6 12h12v3a6 6 0 0 1-12 0z"/></svg>'},
+  orto:{title:'Evaluación de ortodoncia', text:'Tu prioridad es alinear tu sonrisa. El ortodoncista te dirá si brackets o alineadores son lo mejor para ti y cuánto tiempo toma.',
+    icon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--teal)"><path d="M2 12s3-6 10-6 10 6 10 6-3 6-10 6S2 12 2 12z"/><path d="M6 12h12M9 9v6M15 9v6"/></svg>'}
+};
+
+function renderResult(){
+  const r=result;
+  document.getElementById('stepTag').textContent='Tu resultado';
+  document.getElementById('score').textContent=r.score;
+  document.getElementById('marker').style.left=`${(r.score/MAX)*100}%`;
+  const v=document.getElementById('verdict'); v.className='verdict '+r.verdictCls; v.textContent=r.verdictTxt;
+  document.getElementById('routeIcon').innerHTML=ROUTES[r.route].icon;
+  document.getElementById('routeTitle').textContent=ROUTES[r.route].title;
+  document.getElementById('routeText').textContent=ROUTES[r.route].text;
+  const f=document.getElementById('flags'); f.innerHTML='';
+  r.flags.forEach(t=>{ const d=document.createElement('div'); d.className='flag'; d.textContent=t; f.appendChild(d); });
+}
+
+function pick(btn,group){
+  const box=document.getElementById(group);
+  box.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
+  btn.classList.add('selected'); picks[group]=btn.dataset.v; ageHints();
+}
+function ageHints(){
+  const age=parseInt(document.getElementById('fAge').value,10);
+  const n=document.getElementById('ageNotice'); n.style.display='none'; n.className='notice';
+  if(!age) return;
+  if(age<18){ n.style.display='block'; n.textContent='Menor de 18: a la evaluación debe venir con su apoderado.'; return; }
+  if(picks.prev && picks.prev.startsWith('Fonasa') && age>=14 && age<=34){ n.style.display='block'; n.textContent='Con Fonasa y entre 14 y 34 años podrías acceder al PAD Dental. Lo confirmamos en la clínica.'; }
+}
+
+function buildSummary(){
+  const r=result;
+  const name=document.getElementById('fName').value.trim()||'—';
+  const age=document.getElementById('fAge').value.trim()||'—';
+  const phone=document.getElementById('fPhone').value.trim()||'—';
+  const note=document.getElementById('fNote').value.trim();
+  const lines=[
+    `Hola Smile, hice el test pre-cita.`,
+    ``,
+    `Nombre: ${name}`,
+    `Edad: ${age}`,
+    `WhatsApp: ${phone}`,
+    `Cobertura dental: ${picks.prev||'—'}`,
+    `Horario para agendar: ${picks.slot||'—'}`,
+    ``,
+    `Resultado: ${r.score}/${MAX} · ${r.level}`,
+    `Evaluación sugerida: ${ROUTES[r.route].title}`,
+  ];
+  lines.push(`Interés: ${r.interests.length ? r.interests.join(', ') : '—'}`);
+  const lab={dolor:'Dolor',sens:'Sensibilidad',encia:'Encías',rotura:'Diente roto/tapadura',orto:'Alineación',aliento:'Aliento',absceso:'Hinchazón/encía',control:'Último control',brux:'Bruxismo',protesis:'Dientes faltantes/prótesis',freno:'Qué lo frenó'};
+  lines.push('', 'Respuestas:');
+  Q.forEach((q,i)=>{ if(q.multi||q.funnel||q.text) return; lines.push(`- ${lab[q.tag]}: ${q.o[answers[i]][0]}`); });
+  const f=r.funnel;
+  lines.push('', 'Embudo:',
+    `- Hace cuánto: ${f.f_tiempo}`,
+    `- Qué ha hecho: ${f.f_intento}`,
+    `- Qué le cuesta: ${(f.f_costo||[]).join(', ')||'—'}`,
+    `- Cómo se siente: ${f.f_emocion}`,
+    `- Cuándo quiere resolverlo: ${f.f_cuando}`);
+  lines.push('', `Sonrisa soñada: ${r.sonrisa||'(no respondió)'}`);
+  if(note) lines.push('', `Nota: ${note}`);
+  return lines.join('\n');
+}
+function validate(){
+  let ok=true;
+  const n=document.getElementById('fName').value.trim(); document.getElementById('eName').style.display=n?'none':'block'; if(!n) ok=false;
+  const p=document.getElementById('fPhone').value.trim(); document.getElementById('ePhone').style.display=p?'none':'block'; if(!p) ok=false;
+  document.getElementById('ePrev').style.display=picks.prev?'none':'block'; if(!picks.prev) ok=false;
+  document.getElementById('eSlot').style.display=picks.slot?'none':'block'; if(!picks.slot) ok=false;
+  if(!ok){
+    go('s-result');
+    const first=document.querySelector('.err[style*="block"]');
+    if(first) first.scrollIntoView({block:'center'});
+  }
+  return ok;
+}
+function showSummary(){
+  if(!validate()) return;
+  document.getElementById('summaryBox').textContent=buildSummary();
+  document.getElementById('stepTag').textContent='Resumen';
+  go('s-summary');
+}
+function waUrl(){ return `https://wa.me/${CLINIC_WA}?text=${encodeURIComponent(buildSummary())}`; }
+function sendWA(a){
+  if(!validate()) return false;
+  const url=waUrl();
+  a.href=url;
+  // Fallback if the viewer blocks opening external links
+  const failId = a.id==='waLink1' ? 'waFail1' : 'waFail2';
+  setTimeout(()=>{
+    if(document.hidden) return;
+    try{ window.top.location.href=url; }catch(e){}
+    setTimeout(()=>{
+      if(document.hidden) return;
+      const f=document.getElementById(failId);
+      f.style.display='block';
+      f.innerHTML='No se pudo abrir WhatsApp desde aquí. Toca <b>Ver mi resumen</b>, copia el texto y pégalo en un mensaje al <b>+56 9 5671 0607</b>.';
+      if(failId==='waFail2'){ f.innerHTML='No se pudo abrir WhatsApp desde aquí. Copia el texto con el botón de abajo y pégalo en un mensaje al <b>+56 9 5671 0607</b>.'; }
+    }, 1200);
+  }, 900);
+  return true; // let the anchor navigate normally
+}
+function copySummary(){
+  const t=buildSummary();
+  const b=document.getElementById('btnCopy');
+  const done=()=>{ b.textContent='Copiado'; setTimeout(()=>b.textContent='Copiar texto',1600); };
+  const legacy=()=>{
+    const ta=document.createElement('textarea'); ta.value=t; document.body.appendChild(ta);
+    ta.select(); ta.setSelectionRange(0,t.length);
+    let ok=false; try{ ok=document.execCommand('copy'); }catch(e){}
+    ta.remove(); if(ok) done(); else { b.textContent='Mantén presionado el texto para copiarlo'; }
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(done).catch(legacy); } else legacy();
+}
+function restart(){
+  answers=new Array(Q.length).fill(null); picks={prev:null,slot:null}; result=null; idx=0;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
+  ['fName','fAge','fPhone','fNote'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('ageNotice').style.display='none';
+  document.getElementById('stepTag').textContent='Test pre-cita';
+  go('s-intro');
+}
+</script>
+</body>
+</html>
